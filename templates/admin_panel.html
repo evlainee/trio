@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ панель</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .action-btns {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .details-btn {
+            background-color: #007bff;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        input, select {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        #searchResults div {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>Пользователи</h2>
+
+    <!-- Элементы для поиска -->
+    <input type="text" id="searchInput" placeholder="Поиск по пользователям...">
+    <select id="searchField">
+        <option value="name">Имя</option>
+        <option value="surname">Фамилия</option>
+        <option value="num">Номер</option>
+        <option value="date_registered">Дата регистрации</option>
+    </select>
+
+    <div id="searchResults"></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th onclick="changeSortField('id')">ID</th>
+                <th onclick="changeSortField('surname')">Фамилия</th>
+                <th onclick="changeSortField('name')">Имя</th>
+                <th onclick="changeSortField('num')">Номер</th>
+                <th onclick="changeSortField('date_registered')">Дата регистрации</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody id="userTable">
+            <!-- Сюда будут динамически добавляться пользователи -->
+        </tbody>
+    </table>
+
+    <script>
+     let currentSortField = 'id'; // Инициализируем сортировку по умолчанию
+    let currentSortDirection = 'asc'; // Направление сортировки по умолчанию
+
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchUsers();
+    });
+
+    function fetchUsers(query = '', field = '', sortField = currentSortField, sortDirection = currentSortDirection) {
+        fetch(`/admin/search_users?query=${query}&field=${field}&sort=${sortField}&direction=${sortDirection}`)
+            .then(response => response.json())
+            .then(data => {
+                const userTable = document.getElementById('userTable');
+                userTable.innerHTML = ''; // Очистка таблицы перед добавлением новых данных
+
+                data.forEach(user => {
+                    const row = userTable.insertRow();
+                    row.insertCell(0).textContent = user.id;
+                    row.insertCell(1).textContent = user.surname;
+                    row.insertCell(2).textContent = user.name;
+                    row.insertCell(3).textContent = user.num;
+                    row.insertCell(4).textContent = user.date_registered;
+                    const actionsCell = row.insertCell(5);
+                    actionsCell.innerHTML = `<div class="action-btns">
+                        <a href="/admin/user/${user.id}" class="btn details-btn">Детали</a>
+                        <form action="/admin/delete_user/${user.id}" method="post" onsubmit="return confirm('Вы уверены, что хотите удалить этого пользователя?');">
+                            <button type="submit" class="btn delete-btn">Удалить</button>
+                        </form>
+                    </div>`;
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+
+    function changeSortField(field) {
+        if (currentSortField === field) {
+            currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSortField = field;
+            currentSortDirection = 'asc';
+        }
+        fetchUsers(document.getElementById('searchInput').value, document.getElementById('searchField').value);
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const query = this.value;
+        const searchField = document.getElementById('searchField').value;
+        fetchUsers(query, searchField);
+    });
+    </script>
+</body>
+</html>

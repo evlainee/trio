@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .wrapper {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%; /* Чтобы таблица растягивалась на всю доступную ширину */
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        select {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        h2, h3 {
+            color: #333;
+        }
+        .nested-table {
+            margin-top: 10px;
+            background: none;
+            box-shadow: none;
+            width: 100%;
+        }
+        .nested-table th, .nested-table td {
+            border-color: #bbb;
+        }
+        .nested-table th {
+            background-color: #e7e7e7;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <h2>User Details</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <td>{{ user.id }}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ user.name }}</td>
+        </tr>
+        <tr>
+            <th>Surname</th>
+            <td>{{ user.surname }}</td>
+        </tr>
+        <tr>
+            <th>Patronymic</th>
+            <td>{{ user.patronymic }}</td>
+        </tr>
+        <tr>
+            <th>Number</th>
+            <td>{{ user.num }}</td>
+        </tr>
+        <tr>
+            <th>Password</th>
+            <td>{{ user.password }}</td>
+        </tr>
+        <tr>
+            <th>Role</th>
+            <td>
+                <select name="role" id="role" onchange="updateUserRole({{ user.id }})">
+                    <option value="Администратор" {% if user.role == "Administrator" %}selected{% endif %}>Администратор</option>
+                    <option value="Инвестор" {% if user.role == "Investor" %}selected{% endif %}>Инвестор</option>
+                    <option value="Стратегический инвестор" {% if user.role == "Strategic_Investor" %}selected{% endif %}>Стратегический инвестор</option>
+                    <option value="Риск-Менеджер" {% if user.role == "Risk_Manager" %}selected{% endif %}>Риск-Менеджер</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>Date Registered</th>
+            <td>{{ user.date_registered }}</td>
+        </tr>
+    </table>
+    <br>
+    <!-- Portfolio and Stocks -->
+    <h3>Portfolio Details</h3>
+    {% if user.portfolio %}
+    <table>
+        <tr>
+            <th>Portfolio ID</th>
+            <td>{{ user.portfolio.id }}</td>
+        </tr>
+        <tr>
+            <th>Stocks in Portfolio</th>
+            <td>
+                <table>
+                    <tr>
+                        <th>Stock ID</th>
+                        <th>Name</th>
+                        <th>Ticker</th>
+                        <th>Quantity</th>
+                        <th>Purchase Price</th>
+                    </tr>
+                    {% if stocks %}
+                        {% for stock in stocks %}
+                            <tr>
+                                <td>{{ stock.id }}</td>
+                                <td>{{ stock.name }}</td>
+                                <td>{{ stock.tiker }}</td> <!-- Или stock.ticker, если имя столбца исправлено -->
+                                <td>{{ stock.quantity }}</td>
+                                <td>{{ stock.purchase_price }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                <tr>
+                    <td colspan="5">У пользователя нет акций.</td>
+                </tr>
+                {% endif %}
+                </table>
+            </td>
+        </tr>
+    </table>
+    {% else %}
+    <p>No portfolio found for this user.</p>
+    {% endif %}
+
+    <!-- You can add more blocks here for other relationships similarly -->
+</div>
+
+<script>
+function updateUserRole(userId) {
+    const roleSelect = document.getElementById('role');
+    let selectedRole = roleSelect.value; // Используем let, так как значение переменной будет изменено
+
+    // Преобразуем отображаемое значение в значение для базы данных
+    switch (selectedRole) {
+        case "Администратор":
+            selectedRole = "Administrator";
+            break;
+        case "Инвестор":
+            selectedRole = "Investor";
+            break;
+        case "Стратегический инвестор":
+            selectedRole = "Strategic_Investor";
+            break;
+        case "Риск-Менеджер":
+            selectedRole = "Risk_Manager";
+            break;
+    }
+
+    // После блока switch добавляем закрывающую фигурную скобку
+    fetch(`/admin/user/${userId}/update_role`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // Добавьте CSRF токен здесь, если он нужен
+        },
+        body: JSON.stringify({ 'role': selectedRole }) // Отправляем преобразованное значение
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('Role updated successfully');
+            window.location.reload(); // Опционально: перезагрузка страницы или обновление UI
+        } else {
+            alert('Something went wrong.');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+
+</script>
+
+</body>
+</html>

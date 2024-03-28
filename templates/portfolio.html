@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Ваш портфель</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fa;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+        .navigation {
+            background-color: #007BFF; /* Синий цвет фона */
+            color: white;
+            padding: 10px 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 auto;
+            width: 80%; /* или другое значение в зависимости от вашего макета */
+        }
+
+        .nav-container a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-weight: bold; /* Для жирности текста, если это необходимо */
+        }
+
+        .nav-container a:hover {
+            background-color: #0056b3; /* Темно-синий цвет фона при наведении */
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-icons i {
+            padding: 0 10px;
+            /* Стилизация иконок, если они у вас есть. Используйте соответствующий класс для иконок, если они относятся к FontAwesome или другим библиотекам. */
+        }
+
+        /* Если у вас есть логотип, добавьте его стилизацию здесь. */
+        .logo {
+            display: inline-block;
+            margin-right: 20px;
+            /* Добавьте необходимые стили, например размеры и отступы. */
+        }
+        .header {
+            margin: 0 auto; /* Центрирование */
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px; /* Внутренние отступы */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Тень для эффекта "всплытия", если требуется */
+        }
+
+        .container {
+            width: 80%; /* Использование такой же ширины, как у .nav-container */
+            margin: 20px auto; /* Добавлен верхний и нижний отступы для центрирования и пространства */
+            background-color: #fff;
+            padding: 20px; /* Внутренние отступы сохранены для внутреннего содержимого */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Тень для эффекта "всплытия" */
+        }
+        .portfolio-section {
+            width: 100%; /* Использование такой же ширины, как у .nav-container */
+            padding: 20px 0;
+        }
+        .section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            flex-basis: 48%;
+        }
+        .info {
+            padding: 10px 0;
+        }
+        .info-value {
+            font-size: 20px;
+            margin: 0;
+            font-weight: bold;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+
+        .modal {
+    display: none;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal h2 {
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.modal button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.modal button:hover {
+    background-color: #0056b3;
+}
+
+/* Стили для информационных текстов и инпутов в модальном окне */
+.modal div {
+    margin-bottom: 10px;
+}
+
+.modal-content span {
+    font-size: 16px;
+}
+
+/* Стили для элементов ввода в модальном окне */
+.modal-content input[type="number"] {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px; /* Увеличенный отступ снизу */
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%; /* Увеличение ширины */
+    box-sizing: border-box; /* Чтобы padding не увеличивал ширину элемента за его пределы */
+}
+
+/* Стили для блоков информации в модальном окне для добавления отступов */
+.modal-content div {
+    margin-bottom: 15px; /* Увеличенный отступ между блоками информации */
+}
+
+/* Стилизация заголовка модального окна */
+.modal-content h2 {
+    margin-bottom: 25px; /* Увеличение отступа снизу для заголовка */
+}
+
+/* Стилизация кнопки в модальном окне */
+.modal-content button {
+    padding: 10px 20px; /* Увеличение padding для кнопки */
+    margin-top: 20px; /* Убедитесь, что между последним input и кнопкой достаточный отступ */
+}
+
+/* Улучшение внешнего вида текста в модальном окне */
+.modal-content span, .modal-content div#lotInfo {
+    display: block; /* Заставляет span вести себя как блочный элемент */
+    margin-bottom: 10px; /* Добавляет отступ снизу для текста */
+    font-size: 16px; /* Устанавливает размер шрифта */
+}
+
+
+        .stock-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .stock-table th, .stock-table td {
+        text-align: left;
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .stock-table th {
+        background-color: #f2f2f2;
+    }
+
+    .stock-table tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .stock-table .name {
+        display: flex;
+        align-items: center;
+    }
+
+    .stock-table .name img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%; /* Делаем изображение круглым */
+        object-fit: cover;
+        border: 2px solid #ddd; /* Добавляем рамку вокруг изображения */
+        margin-right: 5px;
+    }
+
+    .green {
+        color: green;
+    }
+
+    .red {
+        color: red;
+    }
+
+    .btn-export{
+        padding: 0px;
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navigation">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="/static/img/logo.png" alt="Логотип">
+            </div>
+            <div>
+                <a href="{{ url_for('portfolio.portfolio') }}">Портфель</a>
+                <a href="{{ url_for('stock.stock') }}">Рынки</a>
+                <a href="#">Аналитика</a>
+                <a href="#">Новости</a>
+                <a href="#">Общение</a>
+                <a href="#">Обучение</a>
+            </div>
+            <!-- Предполагаемые иконки -->
+            <div class="nav-icons">
+                <a href="{{ url_for('auth.login') }}">
+                    <img src="/static/img/exit.png" alt="Выход">
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="header">
+            <h1>Портфель</h1>
+            <a href="{{ url_for('portfolio.export_excel') }}" class="btn btn-export">Выгрузить портфель</a>
+        </div>
+
+
+        <div class="portfolio-section">
+            <div class="section">
+                <div class="info">
+                    <h2>Общая стоимость портфеля</h2>
+                    <p class="info-value">{{ total_value }} ₽</p>
+                </div>
+                <button class="btn btn-replenish">Пополнить баланс</button>
+                <button class="btn btn-withdraw">Вывести средства</button>
+                <!-- Раздел Активы сразу после кнопок -->
+                <div class="info">
+                    <h2>Активы</h2>
+                    <!-- Структура таблицы для отображения данных -->
+                    <table class="stock-table">
+                        <thead>
+                            <tr>
+                                <th>Название</th>
+                                <th>Цена</th>
+                                <th>Количество</th>
+                                <th>Стоимость</th>
+                                <th>За все время</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if stocks_data %}
+                                {% for stock in stocks_data %}
+                                    <tr data-ticker="{{ stock.ticker }}" onclick="openStockChart(this.getAttribute('data-ticker'))">
+                                        <td class="name">
+                                            <img src="/static/img/{{ stock.ticker }}.png" alt="{{ stock.name }}">
+                                            {{ stock.name }}
+                                        </td>
+                                        <td>{{ stock.purchase_price }}₽ → {{ stock.now_price }}₽</td>
+                                        <td>{{ stock.quantity }} шт.</td>
+                                        <td>{{ (stock.now_price * stock.quantity)|round(2) }}₽</td>
+                                        <td class="{{ 'green' if stock.now_price > stock.purchase_price else 'red' }}">
+                                            {{ ((stock.now_price - stock.purchase_price) * stock.quantity)|round(2) }}₽
+                                            ({{ ((stock.now_price - stock.purchase_price) / stock.purchase_price * 100)|round(2) }}%)
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5">У вас еще нет акций.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info">
+                    <h2>Свободные средства для инвестирования</h2>
+                    <p class="info-value">{{ free_funds }} ₽</p>
+                </div>
+
+            </div>
+            <!-- Модальное окно для пополнения баланса -->
+            <div id="replenishModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Пополнение</h2>
+                    <form id="replenishForm" action="/portfolio/replenish_balance" method="post">
+                        <div class="form-group">
+                            <label>Откуда:</label>
+                            <input type="text" name="card" pattern="\d+" title="Введите только цифры" placeholder="Данные карты" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Сумма:</label>
+                            <input type="number" name="amount" placeholder="Сумма" required>
+                        </div>
+                        <button type="submit" class="btn">Пополнить</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="withdrawModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Вывести средства</h2>
+                    <form id="withdrawForm" action="/portfolio/withdraw_balance" method="post">
+                        <div class="form-group">
+                            <label>На счет:</label>
+                            <input type="text" name="account" pattern="\d+" title="Введите только цифры" placeholder="Реквизиты счета" required >
+                        </div>
+                        <div class="form-group">
+                            <label>Сумма:</label>
+                            <input type="number" name="amount" placeholder="Сумма" value="0" min="0" required>
+                        </div>
+                        <button type="submit" class="btn">Вывести</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+            function openStockChart(ticker) {
+        window.location.href = '/stock/'+ticker;
+}
+// Получаем модальное окно
+var modal = document.getElementById("replenishModal");
+
+// Получаем кнопку, которая открывает модальное окно
+var btn = document.querySelector(".btn-replenish");
+
+// Получаем элемент <span>, который закрывает модальное окно
+var span = document.getElementsByClassName("close")[0];
+
+// При клике на кнопку открыть модальное окно
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+
+// При клике на <span> (x), закрыть модальное окно
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// При клике вне модального окна, закрыть его
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+<script>
+// Получаем модальное окно для вывода
+var withdrawModal = document.getElementById("withdrawModal");
+
+// Получаем кнопку, которая открывает модальное окно вывода
+var withdrawBtn = document.querySelector(".btn-withdraw");
+
+// Получаем элемент <span>, который закрывает модальное окно вывода
+var withdrawSpan = withdrawModal.getElementsByClassName("close")[0];
+
+// При клике на кнопку открыть модальное окно вывода
+withdrawBtn.onclick = function() {
+    withdrawModal.style.display = "block";
+}
+
+// При клике на <span> (x), закрыть модальное окно вывода
+withdrawSpan.onclick = function() {
+    withdrawModal.style.display = "none";
+}
+</script>
+</body>
+</html>

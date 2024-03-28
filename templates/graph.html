@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>График стоимости акции</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .navigation {
+            background-color: #007BFF; /* Синий цвет фона */
+            color: white;
+            padding: 10px 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 auto;
+            width: 80%; /* или другое значение в зависимости от вашего макета */
+        }
+
+        .nav-container a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-weight: bold; /* Для жирности текста, если это необходимо */
+        }
+
+        .nav-container a:hover {
+            background-color: #0056b3; /* Темно-синий цвет фона при наведении */
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-icons i {
+            padding: 0 10px;
+            /* Стилизация иконок, если они у вас есть. Используйте соответствующий класс для иконок, если они относятся к FontAwesome или другим библиотекам. */
+        }
+
+        /* Если у вас есть логотип, добавьте его стилизацию здесь. */
+        .logo {
+            display: inline-block;
+            margin-right: 20px;
+            /* Добавьте необходимые стили, например размеры и отступы. */
+        }
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .header, .chart-container, .stock-info, .stock-statistics {
+            margin-bottom: 20px;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .chart-container {
+            padding: 20px;
+            background-color: #fff;
+        }
+        canvas {
+            max-width: 100%;
+            height: 400px;
+        }
+        .timeframe-buttons button, .stock-info button {
+            margin-right: 10px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .timeframe-buttons button {
+            background-color: #007bff;
+            color: white;
+        }
+        .stock-info button {
+            padding: 5px 10px;
+            text-decoration: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .stock-info button#buyButton {
+            background-color: #28a745;
+        }
+        .stock-info button#sellButton {
+            background-color: #dc3545;
+        }
+        .stock-statistics h3 {
+            margin-top: 0;
+        }
+        .stock-statistics div {
+            margin-bottom: 10px;
+        }
+
+/* Стили для модального окна */
+.modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed; /* Фиксированное позиционирование */
+    z-index: 1; /* Сидит поверх всего */
+    left: 0;
+    top: 0;
+    width: 100%; /* Ширина 100% */
+    height: 100%; /* Высота 100% */
+    overflow: auto; /* Включите прокрутку, если нужно */
+    background-color: rgb(0,0,0); /* Цвет фона */
+    background-color: rgba(0,0,0,0.4); /* Черный с небольшой прозрачностью */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% сверху и центрировано */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%; /* Изменено на 50% для большей ширины */
+    border-radius: 10px;
+}
+
+/* Стилизация элементов внутри модального окна для увеличения ширины и добавления отступов */
+.modal-content input[type="number"],
+.modal-content div {
+    width: 100%; /* Полная ширина */
+    padding: 10px;
+    margin: 8px 0; /* Добавление вертикальных отступов */
+    box-sizing: border-box; /* Убедитесь, что padding не добавляет к общей ширине */
+}
+
+/* Улучшение внешнего вида кнопки подтверждения */
+#confirmTradeButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: auto; /* Автоматическая ширина в зависимости от содержимого */
+    padding: 10px 20px; /* Больший padding */
+    border-radius: 5px; /* Скругление углов */
+    margin-top: 10px; /* Отступ сверху */
+}
+
+/* Стилизация текста для лучшего соответствия дизайну сайта */
+.modal-content span, .modal-content h2, .modal-content div#lotInfo {
+    margin-bottom: 10px; /* Отступ снизу для каждого элемента */
+}
+
+/* Стилизация закрытия модального окна */
+.close {
+    color: #aaa;
+    cursor: pointer;
+    float: right;
+    font-size: 28px;
+}
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<nav class="navigation">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="/static/img/logo.png" alt="Логотип">
+            </div>
+            <div>
+                <a href="{{ url_for('portfolio.portfolio') }}">Портфель</a>
+                <a href="{{ url_for('stock.stock') }}">Рынки</a>
+                <a href="#">Аналитика</a>
+                <a href="#">Новости</a>
+                <a href="#">Общение</a>
+                <a href="#">Обучение</a>
+            </div>
+            <!-- Предполагаемые иконки -->
+            <div class="nav-icons">
+                <a href="{{ url_for('auth.login') }}">
+                    <img src="/static/img/exit.png" alt="Выход">
+                </a>
+            </div>
+        </div>
+    </nav>
+<div class="container">
+    <div class="header">
+        <h1>{{ stock_name }}</h1>
+        <h4 class="stockTicker">{{ ticker }}</h4>
+    </div>
+
+    <div class="stock-info">
+        <div>Текущая цена: <span id="currentPrice"></span></div>
+        <div>Изменение за день: <span id="dayChange"></span> (<span id="dayChangePercent"></span>)</div>
+        <button id="buyButton" data-ticker="{{ ticker }}" onclick="openTradeModal('Покупка', this.getAttribute('data-ticker'))">Купить</button>
+        <button id="sellButton" data-ticker="{{ ticker }}" onclick="openTradeModal('Продажа', this.getAttribute('data-ticker'))">Продать</button>
+
+    </div>
+    <div class="timeframe-buttons">
+        <button onclick="loadChartData('15min')">15 минут</button>
+        <button onclick="loadChartData('1h')">1 час</button>
+        <button onclick="loadChartData('4h')">4 часа</button>
+        <button onclick="loadChartData('1d')">1 день</button>
+        <button onclick="loadChartData('1m')">1 месяц</button>
+        <button onclick="loadChartData('all')">За все время</button>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="chart-{{ figi }}"></canvas>
+    </div>
+    <div class="stock-statistics">
+        <h3>Ключевая статистика за сегодня</h3>
+        <div>Цена открытия: <span id="openPrice"></span></div>
+        <div>Цена закрытия: <span id="closePrice"></span></div>
+        <div>Минимальная цена: <span id="minPrice"></span></div>
+        <div>Максимальная цена: <span id="maxPrice"></span></div>
+    </div>
+
+    <!-- Модальное окно для покупки/продажи -->
+    <div id="tradeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Операция: <span id="operationType">Покупка</span></h2>
+            <div>Цена акции: <span id="stockPriceModal"></span></div>
+            <div>Количество лотов: <input type="number" id="lotAmount" value="0" min="0" step="1"></div>
+            <div id="lotInfo">1 лот =</div>
+            <div>Доступные средства: <span id="availableFunds"></span> ₽</div>
+            <div>Итог: <span id="totalPrice">0</span></div>
+            <button id="confirmTradeButton" data-ticker="" data-operation="">Подтвердить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const figi = "{{ figi }}";
+    const stockName = "{{ stock_name }}";
+    const canvasId = `chart-${figi}`;
+    const ctx = document.getElementById(canvasId).getContext('2d');
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadChartData('1h'); // Загрузка графика
+        loadStockStats(); // Загрузка статистики
+    });
+
+    function loadChartData(interval) {
+        fetch(`/stock/${figi}/${interval}`)
+            .then(response => response.json())
+            .then(data => {
+                const dates = data.map(item => {
+                const utcDate = new Date(item.Date);
+                // Корректируем UTC время к Московскому времени (UTC+3)
+                const msOffset = utcDate.getTime() + (3 * 60 * 60 * 1000); // Добавляем 3 часа
+                const moscowDate = new Date(msOffset);
+
+                // Форматируем дату и время
+                const date = moscowDate.toISOString().substring(0, 10); // YYYY-MM-DD
+                const time = moscowDate.toISOString().substring(11, 16); // HH:MM
+
+                return `${date} ${time}`;
+            });
+                const prices = data.map(item => item.Close);
+                const priceChange = prices[prices.length - 1] - prices[0];
+                const chartColor = priceChange >= 0 ? 'rgba(40, 167, 69, 1)' : 'rgba(220, 53, 69, 1)';
+                const backgroundColor = priceChange >= 0 ? 'rgba(40, 167, 69, 0.2)' : 'rgba(220, 53, 69, 0.2)'; // Светлый зеленый для роста, светлый красный для падения
+
+                if (window.chart) {
+                    window.chart.destroy(); // Удаление предыдущего графика
+                }
+
+                window.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: `Цена Акции ${stockName} ТФ ${interval}`,
+                            backgroundColor: backgroundColor,
+                            borderColor: chartColor,
+                            data: prices,
+                            fill: true,
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: true
+                                },
+                                beginAtZero: false,
+                            }
+                        }
+                    }
+                });
+            });
+    }
+
+    function loadStockStats() {
+        fetch(`/stock/stats/${figi}`)
+            .then(response => {
+        console.log(response);
+        if (response.headers.get("Content-Type").includes("application/json")) {
+            return response.json();
+        } else {
+            throw new Error('Некорректный тип контента: ожидался JSON');
+        }
+    })
+            .then(stats => {
+                const priceChange = stats.dayChange;
+                const priceChangePercent = stats.dayChangePercent;
+                const changeColor = priceChange >= 0 ? 'green' : 'red';
+                const sign = priceChange >= 0 ? '+' : '';
+
+                document.getElementById('currentPrice').textContent = `${stats.currentPrice} ₽`;
+                document.getElementById('dayChange').style.color = changeColor;
+                document.getElementById('dayChange').textContent = `${sign}${priceChange} ₽`;
+                document.getElementById('dayChangePercent').style.color = changeColor;
+                document.getElementById('dayChangePercent').textContent = `${sign}${priceChangePercent.toFixed(2)}%`;
+                document.getElementById('openPrice').textContent = `${stats.openPrice} ₽`;
+                document.getElementById('closePrice').textContent = `${stats.closePrice} ₽`;
+                document.getElementById('minPrice').textContent = `${stats.minPrice} ₽`;
+                document.getElementById('maxPrice').textContent = `${stats.maxPrice} ₽`;
+            })
+            .catch(error => console.error('Ошибка получения статистики акций:', error));
+    }
+
+    var modal = document.getElementById("tradeModal");
+var span = document.getElementsByClassName("close")[0];
+
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+function calculateLots(ticker) {
+    return fetch(`/stock/${ticker}/lot`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Ошибка при получении информации о лотах');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.lot) {
+                const lotInfoElement = document.getElementById("lotInfo");
+                const suffix = data.suffix;
+                lotInfoElement.textContent = `1 лот = ${data.lot} ${suffix}`;
+                return data.lot; // Возвращаем количество лотов
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при получении информации о лотах:', error);
+            throw error; // Пробрасываем ошибку дальше
+        });
+}
+
+function updateLotInformation(ticker) {
+    calculateLots(ticker)
+        .then(lots => {
+            const lotAmountInput = document.getElementById("lotAmount");
+            lotAmountInput.step = lots;
+        })
+        .catch(error => {
+            console.error('Ошибка при обновлении информации о лотах:', error.message);
+        });
+}
+
+
+function openTradeModal(operationType, ticker) {
+    document.getElementById("operationType").textContent = operationType;
+    document.getElementById("confirmTradeButton").setAttribute("data-ticker", ticker);
+    document.getElementById("confirmTradeButton").setAttribute("data-operation", operationType);
+
+    // Обновляем текущую цену акции из span#currentPrice для модального окна
+    const currentPrice = parseFloat(document.getElementById("currentPrice").textContent.replace(' ₽', ''));
+    updateLotInformation(ticker);
+    document.getElementById("stockPriceModal").textContent = `${currentPrice} ₽`;
+
+    // Обработчик изменения количества акций
+    document.getElementById("lotAmount").oninput = function() {
+        updateTotalPrice(currentPrice);
+    };
+
+    // Первоначальное обновление итоговой цены
+    updateTotalPrice(currentPrice);
+
+    modal.style.display = "block";
+}
+
+function updateTotalPrice(currentPrice) {
+    const quantity = parseInt(document.getElementById("lotAmount").value);
+    const totalPrice = currentPrice * quantity;
+    document.getElementById("totalPrice").textContent = `${totalPrice.toFixed(2)} ₽`; // Форматируем с двумя знаками после запятой
+}
+
+// Вызовите эту функцию при изменении цены, чтобы обновить информацию о лотах
+document.getElementById("currentPrice").addEventListener("change", function() {
+    const currentPrice = parseFloat(this.textContent.replace(' ₽', ''));
+    updateLotInformation(ticker);
+});
+
+
+document.getElementById("confirmTradeButton").addEventListener("click", function() {
+    const operationType = this.getAttribute("data-operation");
+    const ticker = this.getAttribute("data-ticker");
+    const quantity = parseInt(document.getElementById("lotAmount").value);
+    const price = parseFloat(document.getElementById("stockPriceModal").textContent.replace(' ₽', ''));
+
+    fetch('/portfolio/trade_action', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // Добавьте здесь CSRF токен, если ваше приложение его использует
+        },
+        body: JSON.stringify({
+            operationType: operationType,
+            ticker: ticker,
+            quantity: quantity,
+            price: price
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message); // Показываем сообщение от сервера
+        modal.style.display = "none"; // Закрываем модальное окно
+        // Можно добавить код для обновления информации на странице, если это необходимо
+    })
+    .catch(error => {
+        console.error('Ошибка:', error);
+        alert('Произошла ошибка при выполнении операции. Подробности в консоли.');
+    });
+});
+
+
+    setInterval(loadStockStats, 120000); // Обновление статистики каждые 2 минуту
+    setInterval(loadChartData('1h'), 120000); // Обновление статистики каждые 2 минуту
+</script>
+</body>
+</html>
