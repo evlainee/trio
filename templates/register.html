@@ -1,75 +1,161 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #24A6AE, #e0fdff);
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             flex-direction: column;
-            background-color: #f0f0f0;
         }
-        form {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .logo {
+            display: block;
+            justify-content: center;
+            margin-bottom: 20px;
+            width: 150px; /* Измените размер логотипа, если нужно */
         }
+        .container {
+            background-color: #f1fafd;
+            padding: 30px;
+
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
         input[type="text"],
         input[type="password"] {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
             box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #24A6AE;
         }
         button {
-            width: calc(100% - 22px);
-            padding: 10px;
-            background-color: #007bff;
+            width: 100%;
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #24A6AE;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #1a8e8a;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: -10px;
         }
     </style>
 </head>
 <body>
-    <form action="{{ url_for('auth.register') }}" method="post">
+
+
+<div class="logo">
+    <img src="/static/img/logo.png" alt="Логотип"> <!-- Логотип -->
+</div>
+
+<div class="container">
+    <h1>Регистрация</h1>
+    <form action="{{ url_for('auth.register') }}" method="post" id="registrationForm">
         <input type="text" name="name" placeholder="Имя" pattern="[А-Яа-яЁё\s]+" maxlength="30" required><br>
+        <div id="nameError" class="error-message"></div>
+
         <input type="text" name="surname" placeholder="Фамилия" pattern="[А-Яа-яЁё\s]+" maxlength="30" required><br>
+        <div id="surnameError" class="error-message"></div>
+
         <input type="text" name="patronymic" placeholder="Отчество" pattern="[А-Яа-яЁё\s]+" maxlength="30" required><br>
-        <!-- Для номера телефона используйте pattern для валидации формата. Ниже пример для российских номеров -->
+        <div id="patronymicError" class="error-message"></div>
+
         <input type="text" name="num" placeholder="Номер телефона" pattern="\d{11}" maxlength="11" required><br>
-        <!-- Минимальная длина пароля 8 символов -->
+        <div id="numError" class="error-message"></div>
+
         <input type="password" name="password" placeholder="Пароль" minlength="8" maxlength="20" required><br>
+        <div id="passwordError" class="error-message"></div>
+
         <button type="submit">Регистрация</button>
     </form>
-
+</div>
 <script>
-        document.getElementById('name').addEventListener('input', function() {
-            const nameError = document.getElementById('nameError');
-            if (!/^[А-Яа-яЁё\s]+$/.test(this.value)) {
-                nameError.textContent = 'Только буквы и пробелы';
-            } else {
-                nameError.textContent = ''; // Очистить сообщение об ошибке
+    document.addEventListener("DOMContentLoaded", function () {
+        // Анимация появления элементов при загрузке
+        const stockItems = document.querySelectorAll(".container, img, input, button");
+        stockItems.forEach((item, index) => {
+            item.style.opacity = "0";
+            item.style.transform = "translateY(20px)";
+            setTimeout(() => {
+                item.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
+                item.style.opacity = "1";
+                item.style.transform = "translateY(0)";
+            }, index * 100);
+        });
+
+        // Анимация при наведении на элементы
+        stockItems.forEach(item => {
+            item.addEventListener("mouseover", () => {
+                item.style.transform = "scale(1.02)";
+                item.style.transition = "transform 0.3s ease-in-out";
+            });
+            item.addEventListener("mouseout", () => {
+                item.style.transform = "scale(1)";
+            });
+        });
+    });
+
+    document.getElementById('registrationForm').addEventListener('input', function(event) {
+        const input = event.target;
+        const errorElement = document.getElementById(input.name + 'Error');
+
+        if (input.value && !input.checkValidity()) {
+            errorElement.textContent = 'Неверный формат';
+        } else {
+            errorElement.textContent = '';
+        }
+    });
+
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+        let valid = true;
+        const inputs = this.querySelectorAll('input');
+
+        inputs.forEach(input => {
+            if (!input.checkValidity()) {
+                valid = false;
+                document.getElementById(input.name + 'Error').textContent = 'Неверный формат';
             }
         });
 
-        // Добавьте схожие обработчики для других полей ввода
+        if (!valid) {
+            event.preventDefault();
+        }
+    });
+</script>
 
-        document.getElementById('registrationForm').addEventListener('submit', function(event) {
-            // Проверьте здесь все поля формы
-            // Если есть ошибки, вызовите event.preventDefault();
-        });
-    </script>
 </body>
 </html>

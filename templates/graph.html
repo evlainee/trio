@@ -6,55 +6,56 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
 
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
+       body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+background: rgb(230,254,255);
+background: linear-gradient(90deg, rgba(230,254,255,1) 0%, rgba(242,255,254,1) 50%, rgba(230,254,255,1) 100%);
+}
         .navigation {
-            background-color: #007BFF; /* Синий цвет фона */
-            color: white;
-            padding: 10px 0;
-        }
+    background-color: #24A6AE; /* Синий цвет фона */
+    color: white;
+    padding: 10px 0;
+}
 
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 0 auto;
-            width: 80%; /* или другое значение в зависимости от вашего макета */
-        }
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    width: 80%; /* или другое значение в зависимости от вашего макета */
+}
 
-        .nav-container a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            font-weight: bold; /* Для жирности текста, если это необходимо */
-        }
+.nav-container a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    font-weight: bold; /* Для жирности текста, если это необходимо */
+}
 
-        .nav-container a:hover {
-            background-color: #0056b3; /* Темно-синий цвет фона при наведении */
-        }
+.nav-container a:hover {
+    background-color: #1F8E92; /* Темно-синий цвет фона при наведении */
+}
 
-        .nav-icons {
-            display: flex;
-            align-items: center;
-        }
+.nav-icons {
+    display: flex;
+    align-items: center;
+}
 
-        .nav-icons i {
-            padding: 0 10px;
-            /* Стилизация иконок, если они у вас есть. Используйте соответствующий класс для иконок, если они относятся к FontAwesome или другим библиотекам. */
-        }
+.nav-icons i {
+    padding: 0 10px;
+    /* Стилизация иконок, если они у вас есть. Используйте соответствующий класс для иконок, если они относятся к FontAwesome или другим библиотекам. */
+}
 
-        /* Если у вас есть логотип, добавьте его стилизацию здесь. */
-        .logo {
-            display: inline-block;
-            margin-right: 20px;
-            /* Добавьте необходимые стили, например размеры и отступы. */
-        }
+/* Если у вас есть логотип, добавьте его стилизацию здесь. */
+.logo {
+    display: inline-block;
+    margin-right: 20px;
+    /* Добавьте необходимые стили, например размеры и отступы. */
+}
         .container {
             max-width: 1200px;
             margin: 25px auto;
@@ -67,7 +68,7 @@
             margin-bottom: 20px;
         }
         .header {
-            background-color: #007bff;
+            background: #24A6AE;
             color: white;
             padding: 10px 20px;
             border-radius: 5px;
@@ -89,7 +90,7 @@
             font-weight: bold;
         }
         .timeframe-buttons button {
-            background-color: #007bff;
+            background: #24A6AE;
             color: white;
         }
         .stock-info button {
@@ -146,7 +147,7 @@
 
 /* Улучшение внешнего вида кнопки подтверждения */
 #confirmTradeButton {
-    background-color: #28a745;
+    background-color: #24A6AE;
     color: white;
     border: none;
     cursor: pointer;
@@ -179,26 +180,26 @@
 </head>
 <body>
 <nav class="navigation">
-        <div class="nav-container">
-            <div class="logo">
-                <img src="/static/img/logo.png" alt="Логотип">
-            </div>
-            <div>
-                <a href="{{ url_for('portfolio.portfolio') }}">Портфель</a>
-                <a href="{{ url_for('stock.stock') }}">Рынки</a>
-                <a href="#">Аналитика</a>
-                <a href="#">Новости</a>
-                <a href="#">Общение</a>
-                <a href="#">Обучение</a>
-            </div>
-            <!-- Предполагаемые иконки -->
-            <div class="nav-icons">
-                <a href="{{ url_for('auth.login') }}">
-                    <img src="/static/img/exit.png" alt="Выход">
-                </a>
-            </div>
+    <div class="nav-container">
+        <div class="logo">
+            <img src="/static/img/logo.png" alt="Логотип">
         </div>
-    </nav>
+        <div>
+            <a href="{{ url_for('portfolio.portfolio') }}">Портфель</a>
+            <a href="{{ url_for('stock.stock') }}">Рынки</a>
+            <a href="#">Аналитика</a>
+            <a href="#">Новости</a>
+            <a href="#">Общение</a>
+            <a href="#">Обучение</a>
+        </div>
+        <div class="nav-icons">
+            <a href="{{ url_for('auth.login') }}">
+                <img src="/static/img/exit.png" alt="Выход">
+            </a>
+        </div>
+    </div>
+</nav>
+
 <div class="container">
     <div class="header">
         <h1>{{ stock_name }}</h1>
@@ -210,8 +211,8 @@
         <div>Изменение за день: <span id="dayChange"></span> (<span id="dayChangePercent"></span>)</div>
         <button id="buyButton" data-ticker="{{ ticker }}" onclick="openTradeModal('Покупка', this.getAttribute('data-ticker'))">Купить</button>
         <button id="sellButton" data-ticker="{{ ticker }}" onclick="openTradeModal('Продажа', this.getAttribute('data-ticker'))">Продать</button>
-
     </div>
+
     <div class="timeframe-buttons">
         <button onclick="loadChartData('15min')">15 минут</button>
         <button onclick="loadChartData('1h')">1 час</button>
@@ -219,11 +220,13 @@
         <button onclick="loadChartData('1d')">1 день</button>
         <button onclick="loadChartData('1m')">1 месяц</button>
         <button onclick="loadChartData('all')">За все время</button>
+        <button onclick="loadCandlestickChart()">Японские свечи</button>
     </div>
 
     <div class="chart-container">
         <canvas id="chart-{{ figi }}"></canvas>
     </div>
+
     <div class="stock-statistics">
         <h3>Ключевая статистика за сегодня</h3>
         <div>Цена открытия: <span id="openPrice"></span></div>
@@ -232,7 +235,6 @@
         <div>Максимальная цена: <span id="maxPrice"></span></div>
     </div>
 
-    <!-- Модальное окно для покупки/продажи -->
     <div id="tradeModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -246,6 +248,35 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    // Анимация появления элементов при загрузке
+    const stockItems = document.querySelectorAll("canvas, .header,  button");
+    stockItems.forEach((item, index) => {
+        item.style.opacity = "0";
+        item.style.transform = "translateY(20px)";
+        setTimeout(() => {
+            item.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
+            item.style.opacity = "1";
+            item.style.transform = "translateY(0)";
+        }, index * 100);
+    });
+
+    // Анимация при наведении на элементы акций
+    stockItems.forEach(item => {
+        item.addEventListener("mouseover", () => {
+            item.style.transform = "scale(1.02)";
+            item.style.transition = "transform 0.3s ease-in-out";
+        });
+        item.addEventListener("mouseout", () => {
+            item.style.transform = "scale(1)";
+        });
+    });
+
+
+});
+</script>
 
 <script>
     const figi = "{{ figi }}";
@@ -357,39 +388,23 @@ window.onclick = function(event) {
     }
 }
 
-function calculateLots(ticker) {
-    return fetch(`/stock/${ticker}/lot`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Ошибка при получении информации о лотах');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.lot) {
-                const lotInfoElement = document.getElementById("lotInfo");
-                const suffix = data.suffix;
-                lotInfoElement.textContent = `1 лот = ${data.lot} ${suffix}`;
-                return data.lot; // Возвращаем количество лотов
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка при получении информации о лотах:', error);
-            throw error; // Пробрасываем ошибку дальше
-        });
+function calculateLots(price) {
+    if (price < 0.1) return 10000;
+    if (price < 1) return 1000;
+    if (price < 10) return 100;
+    if (price < 50) return 10;
+    if (price < 100) return 5;
+    return 1;
 }
 
-function updateLotInformation(ticker) {
-    calculateLots(ticker)
-        .then(lots => {
-            const lotAmountInput = document.getElementById("lotAmount");
-            lotAmountInput.step = lots;
-        })
-        .catch(error => {
-            console.error('Ошибка при обновлении информации о лотах:', error.message);
-        });
+function updateLotInformation(currentPrice) {
+    const lots = calculateLots(currentPrice);
+    const lotInfoElement = document.getElementById("lotInfo");
+    lotInfoElement.textContent = `1 акция = ${lots} лотов`;
+    // Обновление атрибута 'step' в элементе ввода, чтобы пользователь мог выбрать кратное количество лотов
+    const lotAmountInput = document.getElementById("lotAmount");
+    lotAmountInput.step = lots;
 }
-
 
 function openTradeModal(operationType, ticker) {
     document.getElementById("operationType").textContent = operationType;
@@ -398,7 +413,7 @@ function openTradeModal(operationType, ticker) {
 
     // Обновляем текущую цену акции из span#currentPrice для модального окна
     const currentPrice = parseFloat(document.getElementById("currentPrice").textContent.replace(' ₽', ''));
-    updateLotInformation(ticker);
+    updateLotInformation(currentPrice);
     document.getElementById("stockPriceModal").textContent = `${currentPrice} ₽`;
 
     // Обработчик изменения количества акций
@@ -421,9 +436,8 @@ function updateTotalPrice(currentPrice) {
 // Вызовите эту функцию при изменении цены, чтобы обновить информацию о лотах
 document.getElementById("currentPrice").addEventListener("change", function() {
     const currentPrice = parseFloat(this.textContent.replace(' ₽', ''));
-    updateLotInformation(ticker);
+    updateLotInformation(currentPrice);
 });
-
 
 document.getElementById("confirmTradeButton").addEventListener("click", function() {
     const operationType = this.getAttribute("data-operation");
@@ -458,7 +472,7 @@ document.getElementById("confirmTradeButton").addEventListener("click", function
 
 
     setInterval(loadStockStats, 120000); // Обновление статистики каждые 2 минуту
-    setInterval(loadChartData('1h'), 120000); // Обновление статистики каждые 2 минуту
 </script>
+
 </body>
 </html>

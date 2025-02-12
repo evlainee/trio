@@ -1,10 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>График акций</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
+
+    <h1>График акций</h1>
+    <div>
+        <h2>Линейный график</h2>
+        <div id="line-chart" style="width:100%;height:500px;"></div>
+    </div>
+
+    <div>
+        <h2>Японские свечи</h2>
+        <div id="candlestick-chart" style="width:100%;height:500px;"></div>
+    </div>
+
+    <script>
+        // Пример данных (можно заменить на реальные данные)
+        var data = [
+            { date: '2025-01-01', open: 100, high: 105, low: 95, close: 102 },
+            { date: '2025-01-02', open: 102, high: 110, low: 101, close: 108 },
+            { date: '2025-01-03', open: 108, high: 115, low: 107, close: 110 },
+            { date: '2025-01-04', open: 110, high: 120, low: 109, close: 115 },
+            { date: '2025-01-05', open: 115, high: 118, low: 112, close: 116 }
+        ];
+
+        // Преобразование данных для графика
+        var dates = data.map(d => d.date);
+        var opens = data.map(d => d.open);
+        var highs = data.map(d => d.high);
+        var lows = data.map(d => d.low);
+        var closes = data.map(d => d.close);
+
+        // Линейный график
+        var lineTrace = {
+            x: dates,
+            y: closes,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Закрытие',
+            line: {color: 'blue'}
+        };
+
+        var lineData = [lineTrace];
+
+        var lineLayout = {
+            title: 'Линейный график',
+            xaxis: { title: 'Дата' },
+            yaxis: { title: 'Цена' }
+        };
+
+        Plotly.newPlot('line-chart', lineData, lineLayout);
+
+        // Японские свечи
+        var candlestickTrace = {
+            x: dates,
+            close: closes,
+            decreasing: { line: { color: 'red' } },
+            high: highs,
+            increasing: { line: { color: 'green' } },
+            line: { color: 'black' },
+            low: lows,
+            open: opens,
+            type: 'candlestick',
+            name: 'Курс акций'
+        };
+
+        var candlestickData = [candlestickTrace];
+
+        var candlestickLayout = {
+            title: 'Японские свечи',
+            xaxis: { title: 'Дата' },
+            yaxis: { title: 'Цена' }
+        };
+
+        Plotly.newPlot('candlestick-chart', candlestickData, candlestickLayout);
+    </script>
 
 </body>
 </html>

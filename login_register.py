@@ -1,6 +1,5 @@
-from sqlalchemy import cast, String
 from flask import request, redirect, render_template, url_for, flash, jsonify, session, Blueprint
-from models import db, User, InvestorPortfolio
+from models import db, User
 
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates')

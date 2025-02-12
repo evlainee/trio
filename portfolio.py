@@ -2,8 +2,7 @@ import os
 
 from flask import Blueprint, session, flash, redirect, url_for, render_template, request, jsonify, send_file, \
     current_app
-from sqlalchemy.exc import NoResultFound
-from stocks import get_name_stock, get_current_price, format_price
+from stocks import get_name_stock, get_current_price
 from models import InvestorPortfolio, db, Stock
 from openpyxl import Workbook
 

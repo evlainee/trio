@@ -1,54 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             flex-direction: column;
-            background-color: #f0f0f0;
+            background: linear-gradient(to right, #24A6AE, #e0fdff);
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .logo {
+            display: block;
+            margin: -50px auto 10px;
+            width: 200px; /* Вы можете изменить размер логотипа */
         }
         form {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: #f1fafd;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
         }
         input[type="text"],
         input[type="password"] {
             width: 100%;
-            padding: 10px;
+            padding: 15px;
             margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            box-sizing: border-box; /* Добавляет паддинг внутрь элемента */
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #24A6AE;
         }
         button {
             width: 100%;
-            padding: 10px;
-            background-color: #007bff;
+            padding: 15px;
+            background-color: #24A6AE;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #0056b3;
-        }
-        .messages {
-            margin-bottom: 20px;
-            color: red;
+            background-color: #1a8e8a;
         }
         .register-btn {
-            padding: 10px 20px;
+            width: 100%;
+            padding: 15px;
             background-color: #28a745;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s;
         }
         .register-btn:hover {
             background-color: #218838;
@@ -56,16 +80,44 @@
     </style>
 </head>
 <body>
-    <h2>Login</h2>
+    <img src="/static/img/logo.png" alt="Логотип" class="logo">
+
     <form action="{{ url_for('auth.login') }}" method="post">
+        <h2>Войдите в аккаунт</h2>
         <input type="text" name="num" placeholder="Номер телефона" required><br>
         <input type="password" name="password" placeholder="Пароль" required><br>
-        <button type="submit">Login</button>
+        <button type="submit">Войти</button>
     </form>
     <br>
-    <!-- Изменено на кнопку -->
+    <!-- Кнопка регистрации -->
     <form action="{{ url_for('auth.register') }}">
-        <button type="submit" class="register-btn">Register</button>
+        <button type="submit" class="register-btn">Регистрация</button>
     </form>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Анимация появления элементов при загрузке
+        const stockItems = document.querySelectorAll("form, input, button, img");
+        stockItems.forEach((item, index) => {
+            item.style.opacity = "0";
+            item.style.transform = "translateY(20px)";
+            setTimeout(() => {
+                item.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
+                item.style.opacity = "1";
+                item.style.transform = "translateY(0)";
+            }, index * 100);
+        });
+
+        // Анимация при наведении на элементы
+        stockItems.forEach(item => {
+            item.addEventListener("mouseover", () => {
+                item.style.transform = "scale(1.02)";
+                item.style.transition = "transform 0.3s ease-in-out";
+            });
+            item.addEventListener("mouseout", () => {
+                item.style.transform = "scale(1)";
+            });
+        });
+    });
+</script>
 </body>
 </html>

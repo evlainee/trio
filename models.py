@@ -81,4 +81,4 @@ class Stock(db.Model):
     tiker = db.Column(db.String(10), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     purchase_price = db.Column(db.Float, nullable=False)
-    portfolio_id = db.Column(db.Integer, db.ForeignKey('investor_portfolios.id'), nullable=False)
+    portfolio_id = db.Column(db.Integer, db.ForeignKey('investor_portfolios.id'))

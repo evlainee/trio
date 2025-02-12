@@ -73,4 +73,4 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     flash('Пользователь успешно удален.')
-    return redirect(url_for('auth.admin_panel'))
+    return redirect(url_for('admin.admin_panel'))

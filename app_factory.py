@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for
-from models import db, User, InvestorPortfolio
+from models import db
 
 
 def create_app(test_config=None):

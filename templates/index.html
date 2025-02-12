@@ -8,11 +8,11 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f3f9f9;
 }
 
 .navigation {
-    background-color: #007BFF; /* Синий цвет фона */
+    background-color: #24A6AE; /* Синий цвет фона */
     color: white;
     padding: 10px 0;
 }
@@ -35,7 +35,7 @@ body {
 }
 
 .nav-container a:hover {
-    background-color: #0056b3; /* Темно-синий цвет фона при наведении */
+    background-color: #1F8E92; /* Темно-синий цвет фона при наведении */
 }
 
 .nav-icons {
@@ -70,23 +70,27 @@ body {
 }
 
 .search-input {
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
-    width: calc(100% - 100px); /* Учитываем padding, применяемый к .search-input */
-    box-sizing: border-box;
+    width: 60%;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-left: 50px; /* Добавляем отступ слева */
-    margin-right: 50px; /* Добавляем отступ справа */
+    border-radius: 8px;
+    transition: 0.3s;
+    display: block;
+    margin: 0 auto;
 }
-
+.search-input:focus {
+            border-color: #24A6AE;
+            outline: none;
+            box-shadow: 0 0 8px rgba(36, 166, 174, 0.3);
+        }
 .search-results {
     width: calc(100% - 100px); /* Ширина соответствует ширине .search-input с учетом его margin */
     position: absolute;
     top: 100%;
     left: 50px; /* Смещаем наружу на величину отступа .search-input */
     right: 50px; /* Смещаем наружу на величину отступа .search-input */
-    background: white;
+    background: #e0fdff;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-shadow: 0 4px 6px rgba(0,0,0,.1);
@@ -142,12 +146,13 @@ body {
 }
 
 .stock-item:not(.header), .stock-item-top:not(.header) {
-    background: #fff; /* Белый фон для элементов списка */
+    background: #eefeff; /* Белый фон для элементов списка */
     transition: background-color 0.3s; /* Плавный переход фона */
 }
 
 .stock-item:not(.header):hover, .stock-item-top:not(.header):hover {
-    background-color: #f0f0f0; /* Цвет фона при наведении */
+     background-color: #dafdff;
+     transform: scale(1.02);
 }
 
 .sortable:hover {
@@ -162,10 +167,8 @@ body {
 
 .stock-item.header, .stock-item-top.header {
     font-weight: bold;
-    background: #e8e8e8; /* Фон для заголовков столбцов */
+    background: #24A6AE; /* Фон для заголовков столбцов */
 }
-
-
 
     </style>
 </head>
@@ -191,6 +194,7 @@ body {
             </div>
         </div>
     </nav>
+
     <div class="container">
         <div class="top-stocks-container">
             <div class="top-growth">
@@ -259,10 +263,57 @@ body {
                     <span class="stock-change" style="color: {{ 'green' if stock.dayChangePercent >= 0 else 'red' }}">{{ '%+.2f' % stock.dayChangePercent }}%</span>
                 </div>
             {% endfor %}
-
         </div>
-    </div>
+        </div>
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Анимация появления элементов при загрузке
+    const stockItems = document.querySelectorAll(".stock-item, .stock-item-top");
+    stockItems.forEach((item, index) => {
+        item.style.opacity = "0";
+        item.style.transform = "translateY(20px)";
+        setTimeout(() => {
+            item.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
+            item.style.opacity = "1";
+            item.style.transform = "translateY(0)";
+        }, index * 100);
+    });
+
+    // Анимация при наведении на элементы акций
+    stockItems.forEach(item => {
+        item.addEventListener("mouseover", () => {
+            item.style.transform = "scale(1.02)";
+            item.style.transition = "transform 0.3s ease-in-out";
+        });
+        item.addEventListener("mouseout", () => {
+            item.style.transform = "scale(1)";
+        });
+    });
+
+    // Анимация появления результатов поиска
+    const searchInput = document.getElementById("search-input");
+    const searchResults = document.getElementById("search-results");
+
+    searchInput.addEventListener("input", function () {
+        if (this.value.length > 0) {
+            searchResults.style.display = "block";
+            searchResults.style.opacity = "0";
+            searchResults.style.transform = "translateY(-10px)";
+            setTimeout(() => {
+                searchResults.style.transition = "opacity 0.3s ease-out, transform 0.3s ease-out";
+                searchResults.style.opacity = "1";
+                searchResults.style.transform = "translateY(0)";
+            }, 10);
+        } else {
+            searchResults.style.opacity = "0";
+            searchResults.style.transform = "translateY(-10px)";
+            setTimeout(() => {
+                searchResults.style.display = "none";
+            }, 300);
+        }
+    });
+});
+
 
     const direction = {
     ticker: '', // Направление сортировки для колонки "Тикер"

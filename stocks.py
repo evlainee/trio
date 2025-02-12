@@ -1,16 +1,21 @@
-from flask import jsonify, redirect, url_for, render_template, request, Blueprint
-from tinkoff.invest import Client, CandleInterval, RequestError, InstrumentIdType
+import os
+
+from flask import jsonify, render_template, Blueprint
+from tinkoff.invest import Client, CandleInterval, RequestError
 from tinkoff.invest.utils import now
 from configparser import ConfigParser
 from datetime import timedelta, datetime
-import os
 
 stock_bp = Blueprint('stock', __name__, template_folder='templates')
 TOKEN = 't.o56s5flLZS8rZ_ooAqIcoFnxjoDMTSQEx1cg1XYWxQAZQ_xulTTwa8Tays7n7nql340YHEY-fgapEYaHift_Tw'
 
 # Чтение FIGI акций из файла конфигурации
 config = ConfigParser()
-config.read('config.ini')
+config_path = os.path.join(os.path.dirname(__file__), 'config.ini')
+
+# Указываем кодировку при чтении файла
+config.read(config_path, encoding="utf-8")
+
 stocks_config = {}
 
 for key, value in config['stocks'].items():

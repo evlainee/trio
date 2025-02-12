@@ -5,62 +5,63 @@
     <title>Ваш портфель</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f7fa;
-        }
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+background: rgb(230,254,255);
+background: linear-gradient(90deg, rgba(230,254,255,1) 0%, rgba(242,255,254,1) 50%, rgba(230,254,255,1) 100%);
+}
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
         -webkit-appearance: none;
         margin: 0;
         }
         .navigation {
-            background-color: #007BFF; /* Синий цвет фона */
-            color: white;
-            padding: 10px 0;
-        }
+    background-color: #24A6AE; /* Синий цвет фона */
+    color: white;
+    padding: 10px 0;
+}
 
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 0 auto;
-            width: 80%; /* или другое значение в зависимости от вашего макета */
-        }
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    width: 80%; /* или другое значение в зависимости от вашего макета */
+}
 
-        .nav-container a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            font-weight: bold; /* Для жирности текста, если это необходимо */
-        }
+.nav-container a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    font-weight: bold; /* Для жирности текста, если это необходимо */
+}
 
-        .nav-container a:hover {
-            background-color: #0056b3; /* Темно-синий цвет фона при наведении */
-        }
+.nav-container a:hover {
+    background-color: #1F8E92; /* Темно-синий цвет фона при наведении */
+}
 
-        .nav-icons {
-            display: flex;
-            align-items: center;
-        }
+.nav-icons {
+    display: flex;
+    align-items: center;
+}
 
-        .nav-icons i {
-            padding: 0 10px;
-            /* Стилизация иконок, если они у вас есть. Используйте соответствующий класс для иконок, если они относятся к FontAwesome или другим библиотекам. */
-        }
+.nav-icons i {
+    padding: 0 10px;
+    /* Стилизация иконок, если они у вас есть. Используйте соответствующий класс для иконок, если они относятся к FontAwesome или другим библиотекам. */
+}
 
-        /* Если у вас есть логотип, добавьте его стилизацию здесь. */
-        .logo {
-            display: inline-block;
-            margin-right: 20px;
-            /* Добавьте необходимые стили, например размеры и отступы. */
-        }
+/* Если у вас есть логотип, добавьте его стилизацию здесь. */
+.logo {
+    display: inline-block;
+    margin-right: 20px;
+    /* Добавьте необходимые стили, например размеры и отступы. */
+}
         .header {
             margin: 0 auto; /* Центрирование */
-            background-color: #007bff;
+            background: #24A6AE;
             color: white;
             padding: 10px 20px; /* Внутренние отступы */
             box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Тень для эффекта "всплытия", если требуется */
@@ -78,7 +79,7 @@
             padding: 20px 0;
         }
         .section {
-            background-color: #f9f9f9;
+            background-color: #f4feff;
             padding: 20px;
             border-radius: 5px;
             flex-basis: 48%;
@@ -94,7 +95,7 @@
         .btn {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #007bff;
+            background: #24A6AE;
             color: white;
             border-radius: 5px;
             text-decoration: none;
@@ -141,12 +142,12 @@
 }
 
 .modal h2 {
-    color: #007bff;
+    color: #24A6AE;
     margin-bottom: 20px;
 }
 
 .modal button {
-    background-color: #007bff;
+    background-color: #24A6AE;
     color: white;
     padding: 10px 15px;
     border: none;
@@ -160,7 +161,7 @@
 }
 
 .modal button:hover {
-    background-color: #0056b3;
+    background-color: #1faab4;
 }
 
 /* Стили для информационных текстов и инпутов в модальном окне */
@@ -219,15 +220,20 @@
     }
 
     .stock-table th {
-        background-color: #f2f2f2;
+        background: #24A6AE;
+        color: #fff
     }
 
+    .stock-table tr {
+        background-color: #eefeff;
+    }
     .stock-table tr:hover {
-        background-color: #f5f5f5;
+        background-color: #dafdff;
     }
 
     .stock-table .name {
         display: flex;
+
         align-items: center;
     }
 
@@ -376,6 +382,32 @@
 
         </div>
     </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Анимация появления элементов при загрузке
+        const stockItems = document.querySelectorAll("form, input, button, tr");
+        stockItems.forEach((item, index) => {
+            item.style.opacity = "0";
+            item.style.transform = "translateY(20px)";
+            setTimeout(() => {
+                item.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
+                item.style.opacity = "1";
+                item.style.transform = "translateY(0)";
+            }, index * 100);
+        });
+
+        // Анимация при наведении на элементы
+        stockItems.forEach(item => {
+            item.addEventListener("mouseover", () => {
+                item.style.transform = "scale(1.02)";
+                item.style.transition = "transform 0.3s ease-in-out";
+            });
+            item.addEventListener("mouseout", () => {
+                item.style.transform = "scale(1)";
+            });
+        });
+    });
+</script>
     <script>
             function openStockChart(ticker) {
         window.location.href = '/stock/'+ticker;

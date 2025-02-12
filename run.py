@@ -6,6 +6,5 @@ app = create_app()
 download_folder = os.path.join(os.path.expanduser('~'), 'Downloads')
 app.config['DOWNLOAD_FOLDER'] = download_folder
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port=1241)
